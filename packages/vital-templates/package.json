@@ -50,6 +50,7 @@
     "@bodiless/vital-layout": "^1.0.0-rc.33",
     "@bodiless/vital-navigation": "^1.0.0-rc.33",
     "@bodiless/vital-youtube": "^1.0.0-rc.33",
+    "@bodiless/next": "^1.0.0-rc.33",
     "lodash": "^4.17.19"
   }
 }

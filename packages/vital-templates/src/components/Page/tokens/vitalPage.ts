@@ -16,7 +16,7 @@ import { as, on, Token } from '@bodiless/fclasses';
 import { asBodilessChameleon } from '@bodiless/components';
 import { asFluidToken } from '@bodiless/vital-elements';
 import { WithGA4DesignKeys } from '@bodiless/ga4';
-import { asBodilessPage } from '../asBodilessPage';
+import { asBodilessPage } from '../asBodilessPage.gatsby';
 import { GenericTemplateClean, vitalGenericTemplate } from '../../GenericTemplate';
 
 const Base = asFluidToken({

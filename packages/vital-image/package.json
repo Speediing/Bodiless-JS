@@ -43,6 +43,7 @@
     "@bodiless/layouts": "^1.0.0-rc.33",
     "@bodiless/layouts-ui": "^1.0.0-rc.33",
     "@bodiless/vital-elements": "^1.0.0-rc.33",
+    "@bodiless/next": "^1.0.0-rc.33",
     "lodash": "^4.17.19"
   }
 }
