@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.33](https://github.com/johnsonandjohnson/bodiless-js/compare/v1.0.0-rc.32...v1.0.0-rc.33) (2023-04-06)
+
+
+### Features
+
+* **components:** 'Editable' passes through html props. [Canary] ([#2020](https://github.com/johnsonandjohnson/bodiless-js/issues/2020)) ([3897084](https://github.com/johnsonandjohnson/bodiless-js/commit/38970844d74ba647a1803f3ef94e4e4dd22239c4))
+
+
+
+
+
+# [1.0.0-rc.32](https://github.com/johnsonandjohnson/bodiless-js/compare/v1.0.0-rc.31...v1.0.0-rc.32) (2023-04-06)
+
+**Note:** Version bump only for package bodiless-js
+
+
+
+
+
 # [1.0.0-rc.31](https://github.com/johnsonandjohnson/bodiless-js/compare/v1.0.0-rc.30...v1.0.0-rc.31) (2023-04-06)
 
 
