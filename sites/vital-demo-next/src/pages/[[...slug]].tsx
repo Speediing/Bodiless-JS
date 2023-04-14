@@ -21,6 +21,7 @@ const getStaticProps = async ({ params }: getServerSideProps) => {
     {
       method: 'POST',
       body: JSON.stringify(params ?? ''),
+      cache: 'no-store',
       headers: {
         'Content-Type': 'application/json',
       },
