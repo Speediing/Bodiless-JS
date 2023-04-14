@@ -404,7 +404,6 @@ const getStaticProps = async ({ params }: getServerSideProps) => {
 
   return {
     props: pageData,
-    fallback: 'blocking',
   };
 };
 

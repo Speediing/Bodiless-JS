@@ -24,7 +24,7 @@ const getStaticProps = async ({ params }: getServerSideProps) => {
 };
 
 const getStaticPaths = async ({ params }: getServerSideProps) => {
-  const data = { paths: [], fallback: false };
+  const data = { paths: [], fallback: 'blocking' };
   return data;
 };
 
