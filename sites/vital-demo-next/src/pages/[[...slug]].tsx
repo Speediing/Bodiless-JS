@@ -30,7 +30,7 @@ const getStaticProps = async ({ params }: getServerSideProps) => {
 
     json = await data.json();
   } catch (error) {
-    console.log(error);
+    console.log('error', error);
   }
 
   return json;
