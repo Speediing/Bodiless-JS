@@ -26,25 +26,26 @@ import { hasTrailingSlash } from './nextConfig';
 import type { Data, Node } from './NextMobxStore';
 
 export type gitInfo = {
-  repo: string,
-  sha: string,
-  branch: string,
+  repo: string;
+  sha: string;
+  branch: string;
 };
 
 const propsCache = new NodeCache();
 const redirectsCache = new NodeCache();
 
-const findGitFolder = async () => await findUp('.git', { type: 'directory' }) || '';
+const findGitFolder = async () =>
+  (await findUp('.git', { type: 'directory' })) || '';
 
 /**
  * Get git info from local fs .git directory.
  *
  * @returns {
-*  repo: string,
-*  sha: string,
-*  branch: string,
-* }
-*/
+ *  repo: string,
+ *  sha: string,
+ *  branch: string,
+ * }
+ */
 const getGitInfoFromFs = async (): Promise<gitInfo> => {
   let repo = '';
   let sha = '';
@@ -60,10 +61,10 @@ const getGitInfoFromFs = async (): Promise<gitInfo> => {
     try {
       const projectRoot = path.dirname(gitDir);
       const remotes = await git.listRemotes({ fs, dir: projectRoot });
-      const origin = remotes.find(v => v.remote === 'origin');
+      const origin = remotes.find((v) => v.remote === 'origin');
       repo = origin?.url ?? '';
-      branch = await git.currentBranch({ fs, dir: projectRoot }) || '';
-      sha = await git.resolveRef({ fs, dir: projectRoot, ref: 'HEAD' }) || '';
+      branch = (await git.currentBranch({ fs, dir: projectRoot })) || '';
+      sha = (await git.resolveRef({ fs, dir: projectRoot, ref: 'HEAD' })) || '';
       propsCache.set('GitInfoFromFs', { repo, sha, branch });
       return { repo, sha, branch };
     } catch (err) {
@@ -76,14 +77,14 @@ const getGitInfoFromFs = async (): Promise<gitInfo> => {
 };
 
 /**
-* Get current git repo info.
-*
-* @returns Promise<{
-*  repo: string,
-*  sha: string,
-*  branch: string,
-* }>
-*/
+ * Get current git repo info.
+ *
+ * @returns Promise<{
+ *  repo: string,
+ *  sha: string,
+ *  branch: string,
+ * }>
+ */
 export const createGitInfo = async (): Promise<gitInfo> => {
   try {
     const gitInfoFs = await getGitInfoFromFs();
@@ -104,21 +105,21 @@ export const createGitInfo = async (): Promise<gitInfo> => {
 
 type getServerSideProps = {
   params: {
-    slug?: string[]
-    redirect?: string
-  }
+    slug?: string[];
+    redirect?: string;
+  };
 };
 
 type pageData = {
-  path: string,
-  component: string,
+  path: string;
+  component: string;
   pageContext: {
-    slug: string,
-    template?: string,
-    gitInfo?: gitInfo,
-    subPageTemplate?: string
-  },
-  data: Data,
+    slug: string;
+    template?: string;
+    gitInfo?: gitInfo;
+    subPageTemplate?: string;
+  };
+  data: Data;
 };
 
 /**
@@ -128,7 +129,7 @@ type pageData = {
 export const findComponentPath = (...pathSegments: string[]): string | null => {
   let componentPath;
   // Allowed component extensions are jsx, tsx and json.
-  ['index.jsx', 'index.tsx', 'index.json'].some(item => {
+  ['index.jsx', 'index.tsx', 'index.json'].some((item) => {
     componentPath = path.resolve(...pathSegments, item);
     if (fs.existsSync(componentPath)) {
       return true;
@@ -139,9 +140,9 @@ export const findComponentPath = (...pathSegments: string[]): string | null => {
 };
 
 export type cachedTemplate = {
-  template: string,
-  subpage_template: string,
-  path: string,
+  template: string;
+  subpage_template: string;
+  path: string;
 };
 
 const cachedTemplates: { [key: string]: cachedTemplate | Boolean } = {};
@@ -151,21 +152,28 @@ const discoverDefaultContent = (depth = 1) => {
   let currentDepth = depth;
   let defaultContentPaths: string[] = [];
   while (currentDepth > 0 && dir !== path.resolve(dir, '..')) {
-    const files = fg.sync([
-      `${dir}/bodiless.content.json`,
-      `${dir}/node_modules/**/bodiless.content.json`,
-    ], { deep: 1 });
+    const files = fg.sync(
+      [
+        `${dir}/bodiless.content.json`,
+        `${dir}/node_modules/**/bodiless.content.json`,
+      ],
+      { deep: 1 },
+    );
     files.forEach((file: string) => {
       let fileContent = [];
       try {
         fileContent = JSON.parse(fs.readFileSync(file, 'utf-8'));
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error(`@bodiless/next: error on reading file: ${file}. Error: ${e}.`);
+        console.error(
+          `@bodiless/next: error on reading file: ${file}. Error: ${e}.`,
+        );
       }
       defaultContentPaths = [
         ...defaultContentPaths,
-        ...fileContent.map((file$: string) => path.resolve(path.dirname(file), file$)),
+        ...fileContent.map((file$: string) =>
+          path.resolve(path.dirname(file), file$),
+        ),
       ];
     });
     currentDepth -= 1;
@@ -196,9 +204,13 @@ export const readTemplateFile = (indexPath: string) => {
   return cachedTemplates[indexPath];
 };
 
-const findSubPageTemplateTemplate = (indexPath: string, basePath: string): string => {
+const findSubPageTemplateTemplate = (
+  indexPath: string,
+  basePath: string,
+): string => {
   const templates = readTemplateFile(indexPath);
-  const { subpage_template = '', template = '_default'} = templates as cachedTemplate;
+  const { subpage_template = '', template = '_default' } =
+    templates as cachedTemplate;
   if (subpage_template) return subpage_template;
   if (template) return template;
   const parentPath = path.dirname(path.dirname(indexPath));
@@ -208,9 +220,14 @@ const findSubPageTemplateTemplate = (indexPath: string, basePath: string): strin
   return findSubPageTemplateTemplate(`${parentPath}/index.json`, basePath);
 };
 
-const findTemplate = (indexPath: string, basePath: string, isFirst = true): string => {
+const findTemplate = (
+  indexPath: string,
+  basePath: string,
+  isFirst = true,
+): string => {
   const templates = readTemplateFile(indexPath);
-  const { subpage_template = '', template = '_default'} = templates as cachedTemplate;
+  const { subpage_template = '', template = '_default' } =
+    templates as cachedTemplate;
   if (isFirst && template) {
     return template;
   }
@@ -224,38 +241,41 @@ const findTemplate = (indexPath: string, basePath: string, isFirst = true): stri
   return findTemplate(`${parentPath}/index.json`, basePath, false);
 };
 
-const loadDataFromFiles = async (filepath :string, publicPath: string) => {
+const loadDataFromFiles = async (filepath: string, publicPath: string) => {
   const data = [] as Node[];
   if (!fs.existsSync(filepath)) return data;
 
-  const files = fs.readdirSync(filepath).filter(filename => filename.endsWith('.json'));
-  await Promise.all(files.map(async (file) => {
-    const name = file.replace('.json', '');
+  const files = fs
+    .readdirSync(filepath)
+    .filter((filename) => filename.endsWith('.json'));
+  await Promise.all(
+    files.map(async (file) => {
+      const name = file.replace('.json', '');
 
-    const content = JSON.parse(fs.readFileSync(path.resolve(filepath, file)).toString());
-    const src = content.src || false;
-
-    const isImage = src && src.match(/\.(png|jpg|jpeg|webp|avif)$/);
-    if (isImage && fs.existsSync(path.join(publicPath, src))) {
-      const {
-        base64,
-        img: { width, height },
-      } = await getPlaiceholder(
-        src,
-        { size: 10 }
+      const content = JSON.parse(
+        fs.readFileSync(path.resolve(filepath, file)).toString(),
       );
-      content.base64 = base64;
-      content.width = width;
-      content.height = height;
-    }
+      const src = content.src || false;
 
-    data.push({
-      node: {
-        content: JSON.stringify(content),
-        name
+      const isImage = src && src.match(/\.(png|jpg|jpeg|webp|avif)$/);
+      if (isImage && fs.existsSync(path.join(publicPath, src))) {
+        const {
+          base64,
+          img: { width, height },
+        } = await getPlaiceholder(src, { size: 10 });
+        content.base64 = base64;
+        content.width = width;
+        content.height = height;
       }
-    });
-  }));
+
+      data.push({
+        node: {
+          content: JSON.stringify(content),
+          name,
+        },
+      });
+    }),
+  );
 
   return data;
 };
@@ -268,13 +288,15 @@ const getStaticProps = async ({ params }: getServerSideProps) => {
 
   const slugString = `/${path.posix.join(...slug)}`;
 
-  const redirect = redirects.filter((redirect: AliasItem) => redirect.fromPath === slugString);
+  const redirect = redirects.filter(
+    (redirect: AliasItem) => redirect.fromPath === slugString,
+  );
 
   // If the page is a redirect meta returns the minimal info
   if (redirect.length) {
     return {
       props: {
-        redirect
+        redirect,
       },
     };
   }
@@ -301,9 +323,17 @@ const getStaticProps = async ({ params }: getServerSideProps) => {
   };
 
   try {
-    const indexPath = findComponentPath(...pagesBasePath, ...realSlug.split('/').filter(Boolean));
+    const indexPath = findComponentPath(
+      ...pagesBasePath,
+      ...realSlug.split('/').filter(Boolean),
+    );
     if (indexPath === null) {
-      console.log('Skip folder ', realSlug, pageData.path, ' index file not found.');
+      console.log(
+        'Skip folder ',
+        realSlug,
+        pageData.path,
+        ' index file not found.',
+      );
     } else {
       const basePath = path.resolve(...pagesBasePath);
       // Handle JSON.
@@ -313,7 +343,10 @@ const getStaticProps = async ({ params }: getServerSideProps) => {
           ...templateBasePath,
           `${template}.jsx`,
         );
-        const component = (componentAbs.search(templateBasePath.join('/')) > -1) ? `${template}.jsx` : pageData.component;
+        const component =
+          componentAbs.search(templateBasePath.join('/')) > -1
+            ? `${template}.jsx`
+            : pageData.component;
         pageData.component = component;
         pageData.pageContext.template = template;
       } else {
@@ -321,35 +354,47 @@ const getStaticProps = async ({ params }: getServerSideProps) => {
         pageData.component = indexPath;
       }
 
-      pageData.pageContext.subPageTemplate = findSubPageTemplateTemplate(indexPath, basePath);
+      pageData.pageContext.subPageTemplate = findSubPageTemplateTemplate(
+        indexPath,
+        basePath,
+      );
       pageData.pageContext.gitInfo = gitInfo;
       pageData.data.Page = await loadDataFromFiles(
         path.join(...pagesBasePath, realSlug),
-        path.join(...publicBasePath)
+        path.join(...publicBasePath),
       );
       if (!pageData.data.Site.length) {
         pageData.data.Site = await loadDataFromFiles(
           path.join(...siteDataBasePath),
-          path.join(...publicBasePath)
+          path.join(...publicBasePath),
         );
         propsCache.set('pageDataSite', pageData.data.Site);
       }
 
       if (process.env.BODILESS_DEFAULT_CONTENT_AUTO_DISCOVERY === '1') {
-        const depth = process.env.BODILESS_DEFAULT_CONTENT_AUTO_DISCOVERY_DEPTH || '1';
-        defaultContentSources.push(...discoverDefaultContent(parseInt(depth, 10)));
+        const depth =
+          process.env.BODILESS_DEFAULT_CONTENT_AUTO_DISCOVERY_DEPTH || '1';
+        defaultContentSources.push(
+          ...discoverDefaultContent(parseInt(depth, 10)),
+        );
 
-        if (defaultContentSources.length && !pageData.data.DefaultContent.length) {
+        if (
+          defaultContentSources.length &&
+          !pageData.data.DefaultContent.length
+        ) {
           // eslint-disable-next-line no-restricted-syntax
           for (const source of defaultContentSources) {
             // eslint-disable-next-line no-await-in-loop
             const defaultContents = await loadDataFromFiles(
               source,
-              path.join(...publicBasePath)
+              path.join(...publicBasePath),
             );
             pageData.data.DefaultContent.push(...defaultContents);
           }
-          propsCache.set('pageDataDefaultContent', pageData.data.DefaultContent);
+          propsCache.set(
+            'pageDataDefaultContent',
+            pageData.data.DefaultContent,
+          );
         }
       }
     }
@@ -359,6 +404,7 @@ const getStaticProps = async ({ params }: getServerSideProps) => {
 
   return {
     props: pageData,
+    fallback: 'blocking',
   };
 };
 
