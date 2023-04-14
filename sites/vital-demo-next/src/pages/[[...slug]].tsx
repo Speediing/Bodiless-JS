@@ -1,24 +1,40 @@
-import getStaticProps from '@bodiless/next/lib/getStaticProps';
-import getStaticPaths from '@bodiless/next/lib/getStaticPaths';
+// import getStaticProps from '@bodiless/next/lib/getStaticProps';
+// import getStaticPaths from '@bodiless/next/lib/getStaticPaths';
 import PageRenderer from '@bodiless/next/lib/PageRenderer';
 import _default from '../templates/_default';
 import styleguide from '../templates/styleguide';
 
 const Templates = {
   '_default.jsx': _default,
-  'styleguide.jsx': styleguide
+  'styleguide.jsx': styleguide,
+};
+type getServerSideProps = {
+  params: {
+    slug?: string[];
+    redirect?: string;
+  };
+};
+const getStaticProps = async ({ params }: getServerSideProps) => {
+  const data = await fetch('http://bodiless-js-ohey.test.bluerev.co/api/data', {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+  const json = await data.json();
+  return json;
 };
 
-export {
-  getStaticProps,
-  getStaticPaths
+const getStaticPaths = async ({ params }: getServerSideProps) => {
+  const data = { paths: [{ params: { slug: [] } }], fallback: false };
+  return data;
 };
+
+export { getStaticProps, getStaticPaths };
 
 const Page = ({ component, ...rest }: any) => {
   const DefaultPage = Templates[component] || _default;
   return PageRenderer({
     Component: DefaultPage,
-    ...rest
+    ...rest,
   });
 };
 
