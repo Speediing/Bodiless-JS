@@ -15,14 +15,12 @@ type getServerSideProps = {
   };
 };
 const getStaticProps = async ({ params }: getServerSideProps) => {
-  const data = await fetch('http://bodiless-js-ohey.test.bluerev.co/api/data', {
+  const data = await fetch('https://bodiless-js-ohey.test.bluerev.co/api/data', {
     method: 'POST',
     body: JSON.stringify(params),
     headers: {
       Accept: 'application/json; charset=utf-8',
-      'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(JSON.stringify(params)).toString(),
-      Connect: 'keep-alive',
+      'Content-Type': 'application/json'
     },
   });
   const json = await data.json();
