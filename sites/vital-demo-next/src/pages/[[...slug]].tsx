@@ -19,7 +19,6 @@ const getStaticProps = async ({ params }: getServerSideProps) => {
     method: 'POST',
     body: JSON.stringify(params),
     headers: {
-      Accept: 'application/json; charset=utf-8',
       'Content-Type': 'application/json'
     },
   });
