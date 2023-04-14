@@ -62,11 +62,6 @@
     "test:watch": "jest --watch",
     "test:playwright": "APPLITOOLS_BATCH_ID=`uuidgen` WAIT_ON_TIMEOUT=600000 start-server-and-test sites:launch-vital http://localhost:8005 playwright:run"
   },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run sync:check && npm run lint && npm run check"
-    }
-  },
   "dependencies": {
     "@types/html2canvas": "0.0.35",
     "complexity-report": "^2.0.0-alpha",
