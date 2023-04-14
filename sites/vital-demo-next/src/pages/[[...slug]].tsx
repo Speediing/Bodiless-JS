@@ -21,7 +21,7 @@ const getStaticProps = async ({ params }: getServerSideProps) => {
     headers: {
       Accept: 'application/json; charset=utf-8',
       'Content-Type': 'application/json',
-      'Content-Length': JSON.stringify(params).length.toString(),
+      'Content-Length': Buffer.byteLength(JSON.stringify(params)).toString(),
       Connect: 'keep-alive',
     },
   });
