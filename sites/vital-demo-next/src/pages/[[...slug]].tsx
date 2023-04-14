@@ -15,13 +15,17 @@ type getServerSideProps = {
   };
 };
 const getStaticProps = async ({ params }: getServerSideProps) => {
-  const data = await fetch('https://bodiless-js-ohey.test.bluerev.co/api/data', {
-    method: 'POST',
-    body: JSON.stringify(params),
-    headers: {
-      'Content-Type': 'application/json'
+  console.log(params);
+  const data = await fetch(
+    'https://bodiless-js-ohey.test.bluerev.co/api/data',
+    {
+      method: 'POST',
+      body: JSON.stringify(params),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     },
-  });
+  );
   const json = await data.json();
   return json;
 };
